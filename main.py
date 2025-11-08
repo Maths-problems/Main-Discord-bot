@@ -444,17 +444,26 @@ async def raid(interaction: discord.Interaction):
         return
     message = "OfflineBot On Top\nhttps://discord.gg/b5gXmJUUeu"
     try:
+        # Acknowledge the interaction
+        await interaction.response.send_message("Starting raid...", ephemeral=True)
+
+        # Check if the bot has permission to send messages in the channel
+        if not interaction.channel.permissions_for(interaction.guild.me).send_messages:
+            embed = Embed(title="Permission Denied", description="I don't have permission to send messages in this channel.", color=0xff0000)
+            await interaction.followup.send(embed=embed)
+            return
+
         for _ in range(1000):
             await interaction.channel.send(message)
         embed = Embed(title="Raid Command", description="Raid message sent 1000 times.", color=0x00ff00)
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
     except discord.errors.Forbidden:
         embed = Embed(title="Permission Denied", description="I don't have permission to send messages in this channel.", color=0xff0000)
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
     except Exception as e:
         embed = Embed(title="Error", description=f"An error occurred: {e}", color=0xff0000)
-        await interaction.response.send_message(embed=embed)
-
+        await interaction.followup.send(embed=embed)
+  
 # DM command
 @tree.command(name="dm", description="Send a DM to a user")
 async def dm(interaction: discord.Interaction, user_id: int, *, message: str):
