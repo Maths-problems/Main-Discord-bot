@@ -6,9 +6,9 @@ import asyncio
 from termcolor import colored
 from discord import Embed
 from discord.app_commands import CommandTree
+from pystyle import Colorate, Colors, Center
 
-# ASCII art and console messages
-print(colored('''
+ascii_art_title= '''
   @@@@@@  @@@@@@@@ @@@@@@@@ @@@      @@@ @@@  @@@ @@@@@@@@      @@@@@@@   @@@@@@  @@@@@@@
  @@!  @@@ @@!      @@!      @@!      @@! @@!@!@@@ @@!           @@!  @@@ @@!  @@@   @@!
  @!@!@! @!!!:!   @!!!:!   @!!     !!@ @!@@!!@! @!!!:!        @!@!@!@  @!@!@!   @!!
@@ -17,7 +17,10 @@ print(colored('''
 
 Made by OfflineTheMenace
 Discord: imoffline1234567890
-''', 'red'))
+
+'''
+print(Colorate.horizontal(Colors.purple_to_pink, ascii_art_title))
+
 
 # Prompt the user for dynamic inputs
 mode = input("Guild Mode(1) or User Mode(2): ")
