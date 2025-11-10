@@ -19,7 +19,7 @@ Made by OfflineTheMenace
 Discord: imoffline1234567890
 
 '''
-print(Colorate.horizontal(Colors.purple_to_pink, ascii_art_title))
+print(Colorate.horizontal(Colors.rainbow, ascii_art_title))
 
 
 # Prompt the user for dynamic inputs
