@@ -19,7 +19,7 @@ Made by OfflineTheMenace
 Discord: imoffline1234567890
 
 '''
-print(Colorate.horizontal(Colors.dynamic_rgb, ascii_art_title))
+print(Colorate.Horizontal(Colors.dynamic_rgb, ascii_art_title))
 
 
 # Prompt the user for dynamic inputs
